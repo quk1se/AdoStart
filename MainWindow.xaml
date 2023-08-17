@@ -9,6 +9,22 @@
         Closed="Window_Closed"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <StackPanel Orientation="Vertical">
+            <Button x:Name="create_group" Click="create_group_Click">
+                CREATE TABLE
+            </Button>
+            <Button x:Name="insert_group" Click="insert_group_Click">
+                INSERT GROUP DATA
+            </Button>
+            <Button x:Name="group_count" Click="group_count_Click">
+                GROUP COUNT
+            </Button>
+            <Button x:Name="create_products" Click="create_products_Click">
+                CREATE PRODUCTS TABLE
+            </Button>
+            <Button x:Name="insert_products" Click="insert_products_Click">
+                INSERT PRODUCTS DATA
+            </Button>
+        </StackPanel>
     </Grid>
 </Window>
