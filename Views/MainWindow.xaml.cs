@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
@@ -23,10 +24,31 @@ namespace ado1
     public partial class MainWindow : Window
     {
         private SqlConnection connection;
+        public ObservableCollection<String> columns { get; set; } = new();
         public MainWindow()
         {
             InitializeComponent();
-            connection = null;
+            connection = null!;
+            DataContext = this;
+        }
+        private void Load_Groups()
+        {
+            using SqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "SELECT * FROM ShopOfProducts";
+            try
+            {
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    columns.Add($"Id : {reader.GetGuid(0).ToString()[..4]}..., Name: {reader.GetString(1)}, Description : {reader.GetString(2)}, Picture : {reader.GetInt32(3)}, Quantity : {reader.GetInt32(4)}");
+                }
+                
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -34,7 +56,8 @@ namespace ado1
             try 
             {
                 connection = new(App.ConnectionString);
-                connection.Open(); 
+                connection.Open();
+                Load_Groups();
             } 
             catch(SqlException ex)
             {
@@ -50,7 +73,7 @@ namespace ado1
 
         private void create_group_Click(object sender, RoutedEventArgs e)
         {
-            SqlCommand command = new SqlCommand();
+            using SqlCommand command = new SqlCommand();
             command.Connection = connection;
             command.CommandText = 
                 @"CREATE TABLE ProductGroups (

@@ -8,7 +8,17 @@
         Loaded="Window_Loaded"
         Closed="Window_Closed"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid ShowGridLines="True" RenderTransformOrigin="0.504,0.634">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+        </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical">
             <Button x:Name="create_group" Click="create_group_Click">
                 CREATE TABLE
@@ -25,6 +35,11 @@
             <Button x:Name="insert_products" Click="insert_products_Click">
                 INSERT PRODUCTS DATA
             </Button>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0">
+            <Label Content="Group content"/>
+
+            <ListView ItemsSource="{Binding columns}"></ListView>
         </StackPanel>
     </Grid>
 </Window>

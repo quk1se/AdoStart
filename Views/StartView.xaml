@@ -1,0 +1,13 @@
+﻿<Window x:Class="ado1.Views.StartView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ado1.Views"
+        mc:Ignorable="d"
+        Title="StartView" Height="450" Width="800">
+    <StackPanel Orientation="Vertical">
+        <Label HorizontalContentAlignment="center"> ADO.NET</Label>
+        <Button x:Name="IntroBtn" Click="IntroBtn_Click"> ИНИЦИАЛИЗАЦИЯ БД</Button>
+    </StackPanel>
+</Window>
