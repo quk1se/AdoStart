@@ -20,26 +20,45 @@
             <RowDefinition Height="2*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical">
-            <Button x:Name="create_group" Click="create_group_Click">
+            <Button x:Name="create_group" Click="CreateGroup_Click">
                 CREATE TABLE
             </Button>
-            <Button x:Name="insert_group" Click="insert_group_Click">
+            <Button x:Name="insert_group" Click="InsertGroup_Click">
                 INSERT GROUP DATA
             </Button>
-            <Button x:Name="group_count" Click="group_count_Click">
+            <Button x:Name="group_count" Click="GroupCount_Click">
                 GROUP COUNT
-            </Button>
-            <Button x:Name="create_products" Click="create_products_Click">
-                CREATE PRODUCTS TABLE
-            </Button>
-            <Button x:Name="insert_products" Click="insert_products_Click">
-                INSERT PRODUCTS DATA
             </Button>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0">
             <Label Content="Group content"/>
 
-            <ListView ItemsSource="{Binding columns}"></ListView>
+            <ListView ItemsSource="{Binding ProductGroups}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Id"
+                                        DisplayMemberBinding="{Binding Path=Id}">
+                        </GridViewColumn>
+                        <GridViewColumn Header="Name"
+                                        DisplayMemberBinding="{Binding Path=Name}">
+                        </GridViewColumn>
+                        <GridViewColumn Header="Description"
+                                        DisplayMemberBinding="{Binding Path=Description}">
+                        </GridViewColumn>
+                        <GridViewColumn Header="Picture"
+                                        DisplayMemberBinding="{Binding Path=Picture}">
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+
+                <ListView.Resources>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick">
+                                     
+                        </EventSetter>
+                    </Style>
+                </ListView.Resources>
+            </ListView>
         </StackPanel>
     </Grid>
 </Window>

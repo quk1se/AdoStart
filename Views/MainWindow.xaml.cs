@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using ado1.Views;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,44 +26,58 @@ namespace ado1
     {
         private SqlConnection connection;
         public ObservableCollection<String> columns { get; set; } = new();
+        public ObservableCollection<DAL.Entity.ProductGroup> ProductGroups { get; set; } = new();
+
         public MainWindow()
         {
             InitializeComponent();
             connection = null!;
-            DataContext = this;
-        }
-        private void Load_Groups()
-        {
-            using SqlCommand command = new();
-            command.Connection = connection;
-            command.CommandText = "SELECT * FROM ShopOfProducts";
-            try
-            {
-                using SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    columns.Add($"Id : {reader.GetGuid(0).ToString()[..4]}..., Name: {reader.GetString(1)}, Description : {reader.GetString(2)}, Picture : {reader.GetInt32(3)}, Quantity : {reader.GetInt32(4)}");
-                }
-                
-            }
-            catch (SqlException ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            this.DataContext = this;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            try 
+            try
             {
                 connection = new(App.ConnectionString);
                 connection.Open();
-                Load_Groups();
-            } 
-            catch(SqlException ex)
+                LoadGroups();
+            }
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 Close();
+            }
+        }
+
+        private void LoadGroups()
+        {
+            using SqlCommand command = new();
+            command.Connection = connection;
+            command.CommandText = "SELECT * FROM ProductGroups WHERE DeleteDt IS NULL";
+            try
+            {
+                using SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())  // get result's one row
+                {
+                    // columns.Add(
+                    //     $"Id: {reader.GetGuid(0).ToString()[..4]}..., Name: {reader.GetString(1)}"
+                    // );
+                    ProductGroups.Add(new()
+                    {
+                        Id = reader.GetGuid(0),
+                        Name = reader.GetString(1),
+                        Description = reader.GetString(2),
+                        Picture = reader.GetString(3),
+
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Query error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -71,35 +86,36 @@ namespace ado1
             connection?.Dispose();
         }
 
-        private void create_group_Click(object sender, RoutedEventArgs e)
+        private void CreateGroup_Click(object sender, RoutedEventArgs e)
         {
-            using SqlCommand command = new SqlCommand();
+            using SqlCommand command = new();
             command.Connection = connection;
-            command.CommandText = 
+            command.CommandText =
                 @"CREATE TABLE ProductGroups (
-                     Id            UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-                     Name        NVARCHAR(50)     NOT NULL,
-                     Description NTEXT            NOT NULL,
-                     Picture     NVARCHAR(50)     NULL
+	                Id			UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+	                Name		NVARCHAR(50)     NOT NULL,
+	                Description NTEXT            NOT NULL,
+                    Picture     NVARCHAR(50)     NULL
                 )";
             try
             {
                 command.ExecuteNonQuery();
-                MessageBox.Show("Done");
+                MessageBox.Show("Table Created");
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Create Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Create error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void insert_group_Click(object sender, RoutedEventArgs e)
+        private void InsertGroup_Click(object sender, RoutedEventArgs e)
         {
             using SqlCommand command = new();
             command.Connection = connection;
             command.CommandText =
                 @"INSERT INTO ProductGroups
-                    ( Id, Name,    Description, Picture )
+	                ( Id, Name,	Description, Picture )
                 VALUES
                 ( '089015F4-31B5-4F2B-BA05-A813B5419285', N'Інструменти',     N'Ручний інструмент для побутового використання', N'tools.png' ),
                 ( 'A6D7858F-6B75-4C75-8A3D-C0B373828558', N'Офісні товари',   N'Декоративні товари для офісного облаштування', N'office.jpg' ),
@@ -109,75 +125,115 @@ namespace ado1
             try
             {
                 command.ExecuteNonQuery();
-                MessageBox.Show("Done");
+                MessageBox.Show("Data inserted");
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Create Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Insertation error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void group_count_Click(object sender, RoutedEventArgs e)
+        private void GroupCount_Click(object sender, RoutedEventArgs e)
         {
             using SqlCommand command = new();
             command.Connection = connection;
             command.CommandText = "SELECT COUNT(*) FROM ProductGroups";
             try
             {
-                int cnt = Convert.ToInt32(command.ExecuteScalar());
+                int cnt = Convert.ToInt32(
+                    command.ExecuteScalar());
                 MessageBox.Show($"Table has {cnt} rows");
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Query Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(ex.Message, "Query error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void create_products_Click(object sender, RoutedEventArgs e)
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            SqlCommand command = new SqlCommand();
-            command.Connection = connection;
-            command.CommandText =
-                @"CREATE TABLE ShopOfProducts (
-                     Id            UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
-                     Name        NVARCHAR(50)     NOT NULL,
-                     Description NTEXT            NOT NULL,
-                     Price       NVARCHAR(50)     NULL,
-                     Quantity    NVARCHAR(50)     NULL
-                )";
+            if (sender is ListViewItem item)
+            {
+                if (item.Content is DAL.Entity.ProductGroup group)
+                {
+                    CrudGroupsWindow cgw = new(group);
+                    bool? result = cgw.ShowDialog();
+                    if (result == false)
+                    {
+                        if (deleteProductGroup(group))
+                        {
+                            ProductGroups.Remove(group);
+                            MessageBox.Show("Delete data");
+                        }
+                        else
+                            MessageBox.Show("Troubles with your db");
+                    }
+                    else if (result == true)
+                    {
+                        if (saveProductGroup(group))
+                        {
+                            MessageBox.Show("Save data");
+                        }
+                        else
+                            MessageBox.Show("Troubles with your db");
+                    }
+                }
+            }
+        }
+        private bool deleteProductGroup(DAL.Entity.ProductGroup group)
+        {
+            using SqlCommand cmd = new();
+            cmd.Connection = connection;
+            // !! видалення - встановлення "мітки" - дати видалення
+            // реально це оновлення (UPDATE)
+            cmd.CommandText = $@"
+                UPDATE
+                    ProductGroups 
+                SET 
+                    DeleteDt = CURRENT_TIMESTAMP
+                WHERE 
+                    Id = '{group.Id}' ";
             try
             {
-                command.ExecuteNonQuery();
-                MessageBox.Show("PRODUCTS CREATED");
+                cmd.ExecuteNonQuery();
+                return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Create Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Title = ex.Message;
+                return false;
             }
         }
 
-        private void insert_products_Click(object sender, RoutedEventArgs e)
+        private bool saveProductGroup(DAL.Entity.ProductGroup group)
         {
-            using SqlCommand command = new();
-            command.Connection = connection;
-            command.CommandText =
-                @"INSERT INTO ShopOfProducts
-                    ( Id, Name,    Description, Price, Quantity )
-                VALUES
-                ( '089015F4-31B5-4F2B-BA05-A813B5419285', N'Кавун',     N'Смачно', N'23', N'33'  ),
-                ( 'A6D7858F-6B75-4C75-8A3D-C0B373828558', N'Сир',   N'Смачно', N'56', N'43' ),
-                ( 'DEF24080-00AA-440A-9690-3C9267243C43', N'Майонез',  N'Смачно', N'345', N'53' ),
-                ( '2F9A22BC-43F4-4F73-BAB1-9801052D85A9', N'Ковбаса', N'Смачно', N'24', N'342' ),
-                ( 'D6D9783F-2182-469A-BD08-A24068BC2A23', N'Молоко', N'Смачно', N'112', N'88' )";
+            
+            
+            using SqlCommand cmd = new();
+            cmd.Connection = connection;
+            cmd.CommandText = $@"
+            UPDATE
+                ProductGroups 
+            SET 
+                Name = N'{group.Name}', 
+                Description = N'{group.Description}', 
+                Picture = N'{group.Picture}' 
+            WHERE 
+                Id = '{group.Id}' ";
             try
             {
-                command.ExecuteNonQuery();
-                MessageBox.Show("Done");
+                cmd.ExecuteNonQuery();
+                return true;
             }
-            catch (SqlException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Create Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Title = ex.Message;
+                return false;
             }
+            
         }
+
     }
 }
