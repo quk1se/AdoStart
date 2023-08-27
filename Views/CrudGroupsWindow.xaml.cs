@@ -43,12 +43,7 @@ namespace ado1.Views
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            bool? descriptionCount = ProductGroup?.Description.All(c => char.IsLetter(c));
-            bool? nameCount = ProductGroup?.Name.All(c => char.IsLetter(c));
-            bool? pictureCount = ProductGroup?.Picture.All(c => char.IsLetter(c));
-
-            if (ProductGroup?.Name == "" || ProductGroup?.Description == "" || ProductGroup?.Picture == "" ||
-                descriptionCount == true || nameCount == true || pictureCount == true)
+            if (ProductGroup?.Name == "" || ProductGroup?.Description == "" || ProductGroup?.Picture == "")
             {
                 MessageBox.Show("Enter normal data!");
             }

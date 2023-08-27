@@ -19,7 +19,7 @@
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" Grid.ColumnSpan="2">
             <Button x:Name="create_group" Click="CreateGroup_Click">
                 CREATE TABLE
             </Button>
@@ -30,8 +30,11 @@
                 GROUP COUNT
             </Button>
         </StackPanel>
-        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0">
-            <Label Content="Group content"/>
+        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <DockPanel LastChildFill="False" Width="200">
+                <Label Content="Group content" DockPanel.Dock="Left"/>
+                <Button x:Name="AddGroupButton" Margin="0 0 10 0" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="30" Click="AddGroupButton_Click">Add</Button>
+            </DockPanel>
 
             <ListView ItemsSource="{Binding ProductGroups}">
                 <ListView.View>

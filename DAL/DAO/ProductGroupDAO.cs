@@ -1,0 +1,117 @@
+﻿using ado1.DAL.Entity;
+using Microsoft.Data.SqlClient;
+using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+
+namespace ado1.DAL.DAO
+{
+    internal class ProductGroupDAO
+    {
+        private readonly SqlConnection _connection;
+        public ProductGroupDAO(SqlConnection connection)
+        {
+            _connection = connection;
+        }
+        public List<Entity.ProductGroup> GetAll()
+        {
+            using SqlCommand command = new();
+            command.Connection = _connection;
+            command.CommandText = "SELECT * FROM ProductGroups WHERE DeleteDt IS NULL";
+            try
+            {
+                using SqlDataReader reader = command.ExecuteReader();
+                var ProductGroups = new List<Entity.ProductGroup>();
+                while (reader.Read())  // get result's one row
+                {
+                    // columns.Add(
+                    //     $"Id: {reader.GetGuid(0).ToString()[..4]}..., Name: {reader.GetString(1)}"
+                    // );
+                    ProductGroups.Add(new()
+                    {
+                        Id = reader.GetGuid(0),
+                        Name = reader.GetString(1),
+                        Description = reader.GetString(2),
+                        Picture = reader.GetString(3),
+
+                    });
+                }
+                return ProductGroups;
+            }
+            catch { throw; }
+        }
+        public void Add(Entity.ProductGroup productGroup)
+        {
+            using SqlCommand command = new();
+            command.Connection = _connection;
+            command.CommandText = "INSERT INTO ProductGroups (Id, Name, Description, Picture) VALUES (@id, @name, @description, @picture)";
+            command.Prepare();
+
+            command.Parameters.Add(new SqlParameter("@id", SqlDbType.UniqueIdentifier));
+            command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50));
+            command.Parameters.Add(new SqlParameter("@description", SqlDbType.NText));
+            command.Parameters.Add(new SqlParameter("@picture", SqlDbType.NVarChar, 50));
+
+            command.Parameters[0].Value = productGroup.Id;
+            command.Parameters[1].Value = productGroup.Name;
+            command.Parameters[2].Value = productGroup.Description;
+            command.Parameters[3].Value = productGroup.Picture;
+
+            command.ExecuteNonQuery();
+        }
+
+        public bool Delete(Entity.ProductGroup productGroup)
+        {
+            using SqlCommand command = new();
+            command.Connection = _connection;
+            command.CommandText = $@"UPDATE ProductGroups SET DeleteDt = @datetime WHERE Id = @id";
+            command.Prepare();
+            command.Parameters.Add(new SqlParameter("@id",SqlDbType.UniqueIdentifier));
+            command.Parameters.Add(new SqlParameter("@datetime", SqlDbType.DateTime));
+
+            command.Parameters[0].Value = productGroup.Id;
+            command.Parameters[1].Value = DateTime.Now;
+
+            try
+            {
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public bool SaveAndUpdate(Entity.ProductGroup productGroup)
+        {
+            using SqlCommand command = new();
+            command.Connection = _connection;
+            command.CommandText = $@"UPDATE ProductGroups SET Name = @name, Description = @description, Picture = @picture WHERE Id = @id";
+
+            command.Parameters.Add(new SqlParameter("@id", SqlDbType.UniqueIdentifier));
+            command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50));
+            command.Parameters.Add(new SqlParameter("@description", SqlDbType.NText));
+            command.Parameters.Add(new SqlParameter("@picture", SqlDbType.NVarChar, 50));
+
+            command.Parameters[0].Value = productGroup.Id;
+            command.Parameters[1].Value = productGroup.Name;
+            command.Parameters[2].Value = productGroup.Description;
+            command.Parameters[3].Value = productGroup.Picture;
+
+            try
+            {
+                command.ExecuteNonQuery();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+}

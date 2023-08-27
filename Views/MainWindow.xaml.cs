@@ -25,6 +25,7 @@ namespace ado1
     public partial class MainWindow : Window
     {
         private SqlConnection connection;
+        private DAL.DAO.ProductGroupDAO productGroupDAO;
         public ObservableCollection<String> columns { get; set; } = new();
         public ObservableCollection<DAL.Entity.ProductGroup> ProductGroups { get; set; } = new();
 
@@ -41,6 +42,7 @@ namespace ado1
             {
                 connection = new(App.ConnectionString);
                 connection.Open();
+                productGroupDAO = new(connection);
                 LoadGroups();
             }
             catch (Exception ex)
@@ -52,26 +54,11 @@ namespace ado1
 
         private void LoadGroups()
         {
-            using SqlCommand command = new();
-            command.Connection = connection;
-            command.CommandText = "SELECT * FROM ProductGroups WHERE DeleteDt IS NULL";
             try
             {
-                using SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())  // get result's one row
+                foreach (var group in productGroupDAO.GetAll())
                 {
-                    // columns.Add(
-                    //     $"Id: {reader.GetGuid(0).ToString()[..4]}..., Name: {reader.GetString(1)}"
-                    // );
-                    ProductGroups.Add(new()
-                    {
-                        Id = reader.GetGuid(0),
-                        Name = reader.GetString(1),
-                        Description = reader.GetString(2),
-                        Picture = reader.GetString(3),
-
-                    });
+                    ProductGroups.Add(group);
                 }
             }
             catch (Exception ex)
@@ -158,22 +145,27 @@ namespace ado1
             {
                 if (item.Content is DAL.Entity.ProductGroup group)
                 {
-                    CrudGroupsWindow cgw = new(group);
+                    CrudGroupsWindow cgw = new(group with { });
                     bool? result = cgw.ShowDialog();
                     if (result == false)
                     {
-                        if (deleteProductGroup(group))
+                        if (MessageBox.Show("Confirm it?", "Data delete", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                         {
-                            ProductGroups.Remove(group);
-                            MessageBox.Show("Delete data");
+                            if (productGroupDAO.Delete(group))
+                            {
+                                ProductGroups.Remove(group);
+                            }
+                            else
+                                MessageBox.Show("Troubles with your db");
                         }
-                        else
-                            MessageBox.Show("Troubles with your db");
                     }
                     else if (result == true)
                     {
-                        if (saveProductGroup(group))
+                        if (productGroupDAO.SaveAndUpdate(cgw.ProductGroup!))
                         {
+                            int index = ProductGroups.IndexOf(group);
+                            ProductGroups.Remove(group);
+                            ProductGroups.Insert(index, cgw.ProductGroup!);
                             MessageBox.Show("Save data");
                         }
                         else
@@ -182,58 +174,32 @@ namespace ado1
                 }
             }
         }
-        private bool deleteProductGroup(DAL.Entity.ProductGroup group)
+
+
+
+        private void AddGroupButton_Click(object sender, RoutedEventArgs e)
         {
-            using SqlCommand cmd = new();
-            cmd.Connection = connection;
-            // !! видалення - встановлення "мітки" - дати видалення
-            // реально це оновлення (UPDATE)
-            cmd.CommandText = $@"
-                UPDATE
-                    ProductGroups 
-                SET 
-                    DeleteDt = CURRENT_TIMESTAMP
-                WHERE 
-                    Id = '{group.Id}' ";
-            try
+            DAL.Entity.ProductGroup newGroup = new()
             {
-                cmd.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception ex)
+                Id = Guid.NewGuid(),
+
+            };
+            CrudGroupsWindow dialog = new(newGroup);
+            bool? dialogResult = dialog.ShowDialog();
+            if (dialogResult ?? false)
             {
-                Title = ex.Message;
-                return false;
+                try
+                {
+                    productGroupDAO.Add(newGroup);
+                    ProductGroups.Add(newGroup);
+                    MessageBox.Show("Save data");
+                }
+                catch (Exception ex)
+                {
+                    Title = ex.Message;
+                    MessageBox.Show("Troubles with your db");
+                }
             }
         }
-
-        private bool saveProductGroup(DAL.Entity.ProductGroup group)
-        {
-            
-            
-            using SqlCommand cmd = new();
-            cmd.Connection = connection;
-            cmd.CommandText = $@"
-            UPDATE
-                ProductGroups 
-            SET 
-                Name = N'{group.Name}', 
-                Description = N'{group.Description}', 
-                Picture = N'{group.Picture}' 
-            WHERE 
-                Id = '{group.Id}' ";
-            try
-            {
-                cmd.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Title = ex.Message;
-                return false;
-            }
-            
-        }
-
     }
 }
