@@ -7,8 +7,11 @@
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Closed="Window_Closed"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid ShowGridLines="True" RenderTransformOrigin="0.504,0.634">
+        Title="MainWindow" Height="600" Width="900">
+    <Window.Background>
+        <ImageBrush ImageSource="/Views/background.png" TileMode="None" Stretch="UniformToFill"/>
+    </Window.Background>
+    <Grid ShowGridLines="False" RenderTransformOrigin="0.504,0.634">
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
@@ -17,26 +20,13 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="7*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Vertical" Grid.ColumnSpan="2">
-            <Button x:Name="create_group" Click="CreateGroup_Click">
-                CREATE TABLE
-            </Button>
-            <Button x:Name="insert_group" Click="InsertGroup_Click">
-                INSERT GROUP DATA
-            </Button>
-            <Button x:Name="group_count" Click="GroupCount_Click">
-                GROUP COUNT
-            </Button>
-        </StackPanel>
-        <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-            <DockPanel LastChildFill="False" Width="200">
-                <Label Content="Group content" DockPanel.Dock="Left"/>
-                <Button x:Name="AddGroupButton" Margin="0 0 10 0" DockPanel.Dock="Right" HorizontalAlignment="Right" Width="30" Click="AddGroupButton_Click">Add</Button>
-            </DockPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="4">
+        <Label Content="MOSEU SHOP" FontWeight="Bold" FontSize="24" HorizontalAlignment="Center"/>
 
-            <ListView ItemsSource="{Binding ProductGroups}">
+                <ListView ItemsSource="{Binding ProductGroups}" Background="AliceBlue" FontSize="15" FontWeight="Bold" Foreground="Black">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Id"
@@ -51,6 +41,12 @@
                         <GridViewColumn Header="Picture"
                                         DisplayMemberBinding="{Binding Path=Picture}">
                         </GridViewColumn>
+                        <GridViewColumn Header="Price"
+                                        DisplayMemberBinding="{Binding Path=Price}">
+                        </GridViewColumn>
+                        <GridViewColumn Header="Quantity"
+                                        DisplayMemberBinding="{Binding Path=Quantity}">
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
 
@@ -63,5 +59,6 @@
                 </ListView.Resources>
             </ListView>
         </StackPanel>
+        <Button x:Name="AddGroupButton" Background="AliceBlue" FontWeight="Bold" Foreground="Black" FontSize="20" BorderBrush="Black" BorderThickness="3" Margin="0 0 10 0" HorizontalAlignment="Center" Width="300" Click="AddGroupButton_Click" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2">Add</Button>
     </Grid>
 </Window>

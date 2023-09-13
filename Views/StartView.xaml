@@ -6,8 +6,5 @@
         xmlns:local="clr-namespace:ado1.Views"
         mc:Ignorable="d"
         Title="StartView" Height="450" Width="800">
-    <StackPanel Orientation="Vertical">
-        <Label HorizontalContentAlignment="center"> ADO.NET</Label>
-        <Button x:Name="IntroBtn" Click="IntroBtn_Click"> ИНИЦИАЛИЗАЦИЯ БД</Button>
-    </StackPanel>
+    <Button x:Name="IntroBtn" Click="IntroBtn_Click" FontWeight="Bold" FontSize="32" Background="FloralWhite">OPEN SHOP</Button>
 </Window>

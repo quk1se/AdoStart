@@ -25,6 +25,8 @@ namespace ado1.Views
         private string name;
         private string description;
         private string picture;
+        private string price;
+        private string quantity;
 
         public CrudGroupsWindow(DAL.Entity.ProductGroup productGroup)
         {
@@ -34,6 +36,8 @@ namespace ado1.Views
             name = this.ProductGroup.Name;
             description = this.ProductGroup.Description;
             picture = this.ProductGroup.Picture;
+            price = this.ProductGroup.Price;
+            quantity = this.ProductGroup.Quantity;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -84,9 +88,22 @@ namespace ado1.Views
             }
         }
 
-        private void PictTxtBox_TextChanged(object sender, TextChangedEventArgs e)
+
+        private void PriceTxtBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (PictTxtBox.Text == picture)
+            if (DescrTxtBox.Text == price)
+            {
+                SaveButton.IsEnabled = false;
+            }
+            else
+            {
+                SaveButton.IsEnabled = true;
+            }
+        }
+
+        private void QuantityTxtBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (DescrTxtBox.Text == quantity)
             {
                 SaveButton.IsEnabled = false;
             }

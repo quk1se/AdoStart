@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ado1.Views"
         mc:Ignorable="d"
-        Title="CrudGroupsWindow" Height="350" Width="400">
+        Title="CrudGroupsWindow" Height="800" Width="450">
+    <Window.Background>
+        <ImageBrush ImageSource="/Views/background.png" Stretch="UniformToFill"/>
+    </Window.Background>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="45*"/>
+            <ColumnDefinition Width="12*"/>
+            <ColumnDefinition Width="143*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -18,41 +22,57 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-               Content="Редагуємо товарну групу"
-               FontSize="20" FontWeight="DemiBold"
-               HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <Label Grid.Row="1" Grid.Column="0" 
+        <Label Grid.Column="0" Grid.ColumnSpan="3"
+               Content="PRODUCT INFO CHANGES"
+               FontSize="24" FontWeight="Bold"
+               HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Rectangle StrokeThickness="5" Stroke="Black" RadiusX="10" RadiusY="10" Grid.RowSpan ="2" Width="120" Height="120"
+                   Grid.Column="2" Margin="0,20,140,0"></Rectangle>
+        <Label Content="{Binding Path=Picture}" Grid.RowSpan ="2" Width="120" Height="120" Grid.Column="2"  Margin="0,20,140,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+        <Label Grid.Row="1" Grid.Column="0"  FontWeight="Bold"
                Content="ID:" 
-               HorizontalAlignment="Right"  VerticalAlignment="Center"/>
-        <TextBox Grid.Row="1" Grid.Column="1"  Margin="0 0 10 0" Padding="0 2 0 2"
+               HorizontalAlignment="Center"  VerticalAlignment="Bottom" />
+        <TextBox Grid.Row="1" Grid.Column="1" FontWeight="Bold"  Margin="24,0,10,0" Padding="0 2 0 2"
                  Text="{Binding Path=Id}" 
-                 IsEnabled="False" VerticalAlignment="Center"/>
-        <Label Grid.Row="2" Grid.Column="0" 
-               Content="Name:" 
-               HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <TextBox x:Name="NameTxtBox" Grid.Row="2" Grid.Column="1"   Margin="0 0 10 0" Padding="0 2 0 2"
-                 Text="{Binding Path=Name}"  VerticalAlignment="Center" TextChanged="NameTxtBox_TextChanged"/>
-        <Label Grid.Row="3" Grid.Column="0" 
-               Content="Description:" 
-               HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <TextBox x:Name="DescrTxtBox" Grid.Row="3" Grid.Column="1"   Margin="0 0 10 0" Padding="0 2 0 2"
+                 IsEnabled="False" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
+        <Label Grid.Row="2" Grid.Column="0" FontWeight="Bold"
+               Content="Name:" Margin="0,0,13,0"
+               HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
+        <TextBox x:Name="NameTxtBox" FontWeight="Bold" Grid.Row="2" Grid.Column="1"   Margin="24,0,10,0" Padding="0 2 0 2"
+                 Text="{Binding Path=Name}"  VerticalAlignment="Bottom" TextChanged="NameTxtBox_TextChanged" Grid.ColumnSpan="2"/>
+        <Label Grid.Row="3" Grid.Column="0" FontWeight="Bold"
+               Content="Description:"  
+               HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="30,0,0,0"/>
+        <TextBox x:Name="DescrTxtBox" Grid.Row="3" FontWeight="Bold" Grid.Column="1"   Margin="24,0,10,0" Padding="0 2 0 2"
                  Text="{Binding Path=Description}" 
-                 MaxLines="3" TextWrapping="Wrap" VerticalAlignment="Center" TextChanged="DescrTxtBox_TextChanged"/>
-        <Label Grid.Row="4" Grid.Column="0" 
-               Content="Image:" 
-               HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <TextBox x:Name="PictTxtBox" Grid.Row="4" Grid.Column="1"   Margin="0 0 10 0" Padding="0 2 0 2"
-                 Text="{Binding Path=Picture}"  VerticalAlignment="Center" TextChanged="PictTxtBox_TextChanged"/>
-        <UniformGrid  Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
-                      Columns="3" >
+                 MaxLines="3" TextWrapping="Wrap" VerticalAlignment="Bottom" TextChanged="DescrTxtBox_TextChanged" Grid.ColumnSpan="2"/>
+        <Label Grid.Row="4" Grid.Column="0" FontWeight="Bold"
+             Content="Picture:"  
+                HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="30,0,0,0"/>
+        <TextBox x:Name="PictTxtBox" Grid.Row="4" FontWeight="Bold" Grid.Column="1"   Margin="24,0,10,0" Padding="0 2 0 2"
+         Text="{Binding Path=Picture}" 
+         MaxLines="3" TextWrapping="Wrap" VerticalAlignment="Bottom" TextChanged="DescrTxtBox_TextChanged" Grid.ColumnSpan="2"/>
+        <Label Grid.Row="5" Grid.Column="0" FontWeight="Bold"
+               Content="Price:" 
+               HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="30,0,0,0"/>
+        <TextBox x:Name="PriceTxtBox" FontWeight="Bold" Grid.Row="5" Grid.Column="1"   Margin="24,0,10,0" Padding="0 2 0 2"
+                 Text="{Binding Path=Price}"  VerticalAlignment="Bottom" TextChanged="PriceTxtBox_TextChanged" Grid.ColumnSpan="2"/>
+        <Label Grid.Row="6" Grid.Column="0" FontWeight="Bold"
+               Content="Quantity:" 
+               HorizontalAlignment="Left" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="30,0,0,0"/>
+        <TextBox x:Name="QuantityTxtBox" FontWeight="Bold" Grid.Row="6" Grid.Column="1"   Margin="24,0,10,0" Padding="0 2 0 2"
+                 Text="{Binding Path=Quantity}"  VerticalAlignment="Bottom" TextChanged="QuantityTxtBox_TextChanged" Grid.ColumnSpan="2"/>
+        <UniformGrid  Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"
+                      Columns="3" Margin="0,41,0,0" Grid.RowSpan="2" >
             <Button Content="Close"  Margin="20 10" Padding="0 0 0 2" 
-                    x:Name="CloseButton" Click="CloseButton_Click"/>
+                    x:Name="CloseButton" Click="CloseButton_Click" Background="AliceBlue" FontWeight="Bold" Foreground="Black" BorderBrush="Black" BorderThickness="3"/>
             <Button Content="Save"   Margin="20 10" Padding="0 0 0 2" 
-                    x:Name="SaveButton" Click="SaveButton_Click"/>
+                    x:Name="SaveButton" Click="SaveButton_Click" Background="AliceBlue" FontWeight="Bold" Foreground="Black" BorderBrush="Black" BorderThickness="3"/>
             <Button Content="Delete" Margin="20 10" Padding="0 0 0 2" 
-                    x:Name="DeleteButton" Click="DeleteButton_Click"/>
+                    x:Name="DeleteButton" Click="DeleteButton_Click" Background="AliceBlue" FontWeight="Bold" Foreground="Black" BorderBrush="Black" BorderThickness="3"/>
         </UniformGrid>
     </Grid>
 </Window>

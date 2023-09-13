@@ -38,7 +38,8 @@ namespace ado1.DAL.DAO
                         Name = reader.GetString(1),
                         Description = reader.GetString(2),
                         Picture = reader.GetString(3),
-
+                        Price = reader.GetString(5),
+                        Quantity = reader.GetString(6),
                     });
                 }
                 return ProductGroups;
@@ -49,19 +50,22 @@ namespace ado1.DAL.DAO
         {
             using SqlCommand command = new();
             command.Connection = _connection;
-            command.CommandText = "INSERT INTO ProductGroups (Id, Name, Description, Picture) VALUES (@id, @name, @description, @picture)";
+            command.CommandText = "INSERT INTO ProductGroups (Id, Name, Description, Picture,Price,Quantity) VALUES (@id, @name, @description, @picture,@price, @quantity)";
             command.Prepare();
 
             command.Parameters.Add(new SqlParameter("@id", SqlDbType.UniqueIdentifier));
             command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50));
             command.Parameters.Add(new SqlParameter("@description", SqlDbType.NText));
             command.Parameters.Add(new SqlParameter("@picture", SqlDbType.NVarChar, 50));
+            command.Parameters.Add(new SqlParameter("@price", SqlDbType.NVarChar, 50));
+            command.Parameters.Add(new SqlParameter("@quantity", SqlDbType.NVarChar, 50));
 
             command.Parameters[0].Value = productGroup.Id;
             command.Parameters[1].Value = productGroup.Name;
             command.Parameters[2].Value = productGroup.Description;
             command.Parameters[3].Value = productGroup.Picture;
-
+            command.Parameters[4].Value = productGroup.Price;
+            command.Parameters[5].Value = productGroup.Quantity;
             command.ExecuteNonQuery();
         }
 
@@ -91,17 +95,21 @@ namespace ado1.DAL.DAO
         {
             using SqlCommand command = new();
             command.Connection = _connection;
-            command.CommandText = $@"UPDATE ProductGroups SET Name = @name, Description = @description, Picture = @picture WHERE Id = @id";
+            command.CommandText = $@"UPDATE ProductGroups SET Name = @name, Description = @description, Picture = @picture, Price = @price, Quantity = @quantity WHERE Id = @id";
 
             command.Parameters.Add(new SqlParameter("@id", SqlDbType.UniqueIdentifier));
             command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50));
             command.Parameters.Add(new SqlParameter("@description", SqlDbType.NText));
             command.Parameters.Add(new SqlParameter("@picture", SqlDbType.NVarChar, 50));
+            command.Parameters.Add(new SqlParameter("@price", SqlDbType.NVarChar, 50));
+            command.Parameters.Add(new SqlParameter("@quantity", SqlDbType.NVarChar, 50));
 
             command.Parameters[0].Value = productGroup.Id;
             command.Parameters[1].Value = productGroup.Name;
             command.Parameters[2].Value = productGroup.Description;
             command.Parameters[3].Value = productGroup.Picture;
+            command.Parameters[4].Value = productGroup.Price;
+            command.Parameters[5].Value = productGroup.Quantity;
 
             try
             {

@@ -8,11 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Views\background.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="sql\" />
+    <Resource Include="Views\background.png" />
   </ItemGroup>
 
 </Project>
